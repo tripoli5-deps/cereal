@@ -57,8 +57,9 @@ namespace cereal
   {
     size_type size;
     ar( make_size_tag( size ) );
-
-    forward_list.resize( static_cast<size_t>( size ) );
+    
+    T tmp = access::stack_construct<T>();
+    forward_list.resize( static_cast<size_t>( size ) , tmp );
 
     for( auto & i : forward_list )
       ar( i );

@@ -55,7 +55,7 @@ namespace cereal
 
     //! @internal
     template<int N, class Variant, class Archive>
-    typename std::enable_if<N == std::variant_size_v<Variant>, void>::type
+    typename std::enable_if<N >= std::variant_size_v<Variant>, void>::type
     load_variant(Archive & /*ar*/, int /*target*/, Variant & /*variant*/)
     {
       throw ::cereal::Exception("Error traversing variant during load");
@@ -67,7 +67,7 @@ namespace cereal
     {
       if(N == target)
       {
-        variant.template emplace<N>();
+        variant = access::stack_construct<std::variant_alternative_t<N, Variant>>();
         ar( CEREAL_NVP_("data", std::get<N>(variant)) );
       }
       else

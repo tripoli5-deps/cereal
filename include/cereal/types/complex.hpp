@@ -46,7 +46,8 @@ namespace cereal
   template <class Archive, class T> inline
   void CEREAL_LOAD_FUNCTION_NAME( Archive & ar, std::complex<T> & bits )
   {
-    T real, imag;
+    T real = access::stack_construct<T>();
+    T imag = access::stack_construct<T>();
     ar( CEREAL_NVP_("real", real),
         CEREAL_NVP_("imag", imag) );
     bits = {real, imag};

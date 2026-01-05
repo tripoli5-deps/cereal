@@ -256,4 +256,34 @@ struct StructHash {
     }
 };
 
+struct StructNoDefaultCtr {
+  public:
+    StructNoDefaultCtr(int x): x_(x) {}
+
+    int x() const { return x_; }
+    void set_x(int x) { x_ = x;}
+
+    bool operator==(StructNoDefaultCtr const & other) const
+    { return x_ == other.x_; }
+    bool operator!=(StructNoDefaultCtr const & other) const
+    { return x_ != other.x_; }
+    bool operator<(StructNoDefaultCtr const & other) const
+    {
+      if (x_ < other.x_) return true;
+      return false;
+    }
+
+  private:
+    int x_;
+
+    StructNoDefaultCtr(): x_() {}
+
+    friend class cereal::access;
+    template <class Archive>
+    void serialize( Archive & ar )
+    {
+      ar( x_ );
+    }
+};
+
 #endif // CEREAL_TEST_COMMON_H_

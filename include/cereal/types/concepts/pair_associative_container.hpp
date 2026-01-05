@@ -57,8 +57,8 @@ namespace cereal
     auto hint = map.begin();
     for( size_t i = 0; i < size; ++i )
     {
-      typename Map<Args...>::key_type key;
-      typename Map<Args...>::mapped_type value;
+      typename Map<Args...>::key_type key = access::stack_construct<typename Map<Args...>::key_type>();
+      typename Map<Args...>::mapped_type value = access::stack_construct<typename Map<Args...>::mapped_type>();
 
       ar( make_map_item(key, value) );
       #ifdef CEREAL_OLDER_GCC

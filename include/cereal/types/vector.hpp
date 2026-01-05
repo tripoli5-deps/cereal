@@ -77,8 +77,9 @@ namespace cereal
   {
     size_type size;
     ar( make_size_tag( size ) );
-
-    vector.resize( static_cast<std::size_t>( size ) );
+    
+    T tmp = access::stack_construct<T>();
+    vector.resize( static_cast<std::size_t>( size ) , tmp );
     for(auto && v : vector)
       ar( v );
   }

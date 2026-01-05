@@ -33,6 +33,7 @@
 #include <iostream>
 #include <cstdint>
 #include <functional>
+#include <utility>
 
 #include "cereal/macros.hpp"
 #include "cereal/specialize.hpp"
@@ -315,6 +316,13 @@ namespace cereal
       static T * construct()
       {
         return new T();
+      }
+      
+      // for default constructing on the stack
+      template <class T> inline
+      static T stack_construct()
+      {
+        return std::move(T());
       }
 
       template <class T> inline

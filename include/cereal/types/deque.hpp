@@ -51,8 +51,9 @@ namespace cereal
   {
     size_type size;
     ar( make_size_tag( size ) );
-
-    deque.resize( static_cast<size_t>( size ) );
+    
+    T tmp = access::stack_construct<T>();
+    deque.resize( static_cast<size_t>( size ) , tmp );
 
     for( auto & i : deque )
       ar( i );

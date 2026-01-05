@@ -59,7 +59,7 @@ namespace cereal
 
       for( size_type i = 0; i < size; ++i )
       {
-        typename SetT::key_type key;
+        typename SetT::key_type key = access::stack_construct<typename SetT::key_type>();
 
         ar( key );
         set.emplace( std::move( key ) );

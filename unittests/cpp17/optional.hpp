@@ -44,6 +44,7 @@ void test_std_optional()
   std::optional<double> o_o5 = std::nullopt;
   std::optional<std::string> o_o6 = std::nullopt;
   std::optional<std::optional<long>> o_o7 = std::make_optional<std::optional<long>>( std::make_optional<long>( random_value<long>(gen) ) );
+  std::optional<StructNoDefaultCtr> o_o8 = StructNoDefaultCtr(random_value<int>(gen));
 
   std::ostringstream os;
   {
@@ -56,6 +57,7 @@ void test_std_optional()
     oar(o_o5);
     oar(o_o6);
     oar(o_o7);
+    oar(o_o8);
   }
 
   decltype(o_o1) i_o1;
@@ -65,6 +67,7 @@ void test_std_optional()
   decltype(o_o5) i_o5{1.0};
   decltype(o_o6) i_o6{"1"};
   decltype(o_o7) i_o7;
+  decltype(o_o8) i_o8;
 
   std::istringstream is(os.str());
   {
@@ -77,6 +80,7 @@ void test_std_optional()
     iar(i_o5);
     iar(i_o6);
     iar(i_o7);
+    iar(i_o8);
   }
 
   CHECK_EQ( *i_o1, *o_o1 );
@@ -86,6 +90,7 @@ void test_std_optional()
   CHECK_EQ( i_o5.has_value(), o_o5.has_value() );
   CHECK_EQ( i_o6.has_value(), o_o6.has_value() );
   CHECK_EQ( **i_o7, **o_o7 );
+  CHECK_EQ( *i_o8, *o_o8);
 }
 
 #endif // CEREAL_HAS_CPP17

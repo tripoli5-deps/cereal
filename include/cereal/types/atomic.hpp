@@ -46,7 +46,7 @@ namespace cereal
   template <class Archive, class T> inline
   void CEREAL_LOAD_FUNCTION_NAME( Archive & ar, std::atomic<T> & a )
   {
-    T tmp;
+    T tmp = access::stack_construct<T>();
     ar( CEREAL_NVP_("atomic_data", tmp) );
     a.store( tmp );
   }

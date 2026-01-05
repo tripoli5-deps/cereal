@@ -60,6 +60,11 @@ void test_vector()
     for(auto & elem : o_esplvector)
       elem = StructExternalSplit( random_value<int>(gen), random_value<int>(gen) );
 
+    std::vector<StructNoDefaultCtr> o_nodefaultctrvector;
+    o_nodefaultctrvector.reserve(100);
+    for (std::size_t i = 0; i < 100; i++)
+      o_nodefaultctrvector.emplace_back( random_value<int>(gen) );
+
     std::ostringstream os;
     {
       OArchive oar(os);
@@ -70,6 +75,7 @@ void test_vector()
       oar(o_isplvector);
       oar(o_eservector);
       oar(o_esplvector);
+      oar(o_nodefaultctrvector);
     }
 
     std::vector<int> i_podvector;
@@ -78,6 +84,7 @@ void test_vector()
     std::vector<StructInternalSplit>     i_isplvector;
     std::vector<StructExternalSerialize> i_eservector;
     std::vector<StructExternalSplit>     i_esplvector;
+    std::vector<StructNoDefaultCtr>      i_nodefaultctrvector;
 
     std::istringstream is(os.str());
     {
@@ -89,6 +96,7 @@ void test_vector()
       iar(i_isplvector);
       iar(i_eservector);
       iar(i_esplvector);
+      iar(i_nodefaultctrvector);
     }
 
     CHECK_EQ(i_podvector.size(),  o_podvector.size());
@@ -97,6 +105,7 @@ void test_vector()
     CHECK_EQ(i_isplvector.size(), o_isplvector.size());
     CHECK_EQ(i_eservector.size(), o_eservector.size());
     CHECK_EQ(i_esplvector.size(), o_esplvector.size());
+    CHECK_EQ(i_nodefaultctrvector.size(), o_nodefaultctrvector.size());
 
     check_collection(i_podvector,  o_podvector );
     check_collection(i_boolvector, o_boolvector);
@@ -104,6 +113,7 @@ void test_vector()
     check_collection(i_isplvector, o_isplvector);
     check_collection(i_eservector, o_eservector);
     check_collection(i_esplvector, o_esplvector);
+    check_collection(i_nodefaultctrvector, o_nodefaultctrvector);
   }
 }
 

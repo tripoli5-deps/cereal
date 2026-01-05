@@ -56,7 +56,7 @@ namespace cereal {
     if (nullopt) {
       optional = std::nullopt;
     } else {
-      optional.emplace();
+      optional = access::stack_construct<T>();
       ar(CEREAL_NVP_("data", *optional));
     }
   }
