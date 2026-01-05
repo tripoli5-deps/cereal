@@ -39,9 +39,10 @@ void test_std_variant()
   std::random_device rd;
   std::mt19937 gen(rd());
 
-  std::variant<int, double, std::string> o_bv1 = random_value<int>(gen);
-  std::variant<int, double, std::string> o_bv2 = random_value<double>(gen);
-  std::variant<int, double, std::string> o_bv3 = random_basic_string<char>(gen);
+  std::variant<int, double, std::string, StructNoDefaultCtr> o_bv1 = random_value<int>(gen);
+  std::variant<int, double, std::string, StructNoDefaultCtr> o_bv2 = random_value<double>(gen);
+  std::variant<int, double, std::string, StructNoDefaultCtr> o_bv3 = random_basic_string<char>(gen);
+  std::variant<int, double, std::string, StructNoDefaultCtr> o_bv4 = StructNoDefaultCtr(random_value<int>(gen));
 
   std::ostringstream os;
   {
@@ -50,11 +51,13 @@ void test_std_variant()
     oar(o_bv1);
     oar(o_bv2);
     oar(o_bv3);
+    oar(o_bv4);
   }
 
   decltype(o_bv1) i_bv1;
   decltype(o_bv2) i_bv2;
   decltype(o_bv3) i_bv3;
+  decltype(o_bv4) i_bv4;
 
   std::istringstream is(os.str());
   {
@@ -63,11 +66,13 @@ void test_std_variant()
     iar(i_bv1);
     iar(i_bv2);
     iar(i_bv3);
+    iar(i_bv4);
   }
 
   CHECK_EQ( std::get<int>(i_bv1), std::get<int>(o_bv1) );
   CHECK_EQ( std::get<double>(i_bv2), doctest::Approx(std::get<double>(o_bv2)).epsilon(1e-5) );
   CHECK_EQ( std::get<std::string>(i_bv3), std::get<std::string>(o_bv3) );
+  CHECK_EQ( std::get<StructNoDefaultCtr>(i_bv4), std::get<StructNoDefaultCtr>(i_bv4) );
 }
 
 #endif // CEREAL_HAS_CPP17
