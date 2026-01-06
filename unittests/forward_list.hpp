@@ -56,6 +56,10 @@ void test_forward_list()
     for(auto & elem : o_esplforward_list)
       elem = StructExternalSplit( random_value<int>(gen), random_value<int>(gen) );
 
+    std::forward_list<StructNoDefaultCtr> o_nodefaultctr_forward_list;
+    for (std::size_t i = 0; i < 100; i++)
+      o_nodefaultctr_forward_list.emplace_front( random_value<int>(gen) );
+
     std::ostringstream os;
     {
       OArchive oar(os);
@@ -65,6 +69,7 @@ void test_forward_list()
       oar(o_isplforward_list);
       oar(o_eserforward_list);
       oar(o_esplforward_list);
+      oar(o_nodefaultctr_forward_list);
     }
 
     std::forward_list<int> i_podforward_list;
@@ -72,6 +77,7 @@ void test_forward_list()
     std::forward_list<StructInternalSplit>     i_isplforward_list;
     std::forward_list<StructExternalSerialize> i_eserforward_list;
     std::forward_list<StructExternalSplit>     i_esplforward_list;
+    std::forward_list<StructNoDefaultCtr>      i_nodefaultctr_forward_list;
 
     std::istringstream is(os.str());
     {
@@ -82,6 +88,7 @@ void test_forward_list()
       iar(i_isplforward_list);
       iar(i_eserforward_list);
       iar(i_esplforward_list);
+      iar(i_nodefaultctr_forward_list);
     }
 
     check_collection(i_podforward_list,  o_podforward_list );
@@ -89,6 +96,7 @@ void test_forward_list()
     check_collection(i_isplforward_list, o_isplforward_list);
     check_collection(i_eserforward_list, o_eserforward_list);
     check_collection(i_esplforward_list, o_esplforward_list);
+    check_collection(i_nodefaultctr_forward_list, o_nodefaultctr_forward_list);
   }
 }
 

@@ -56,6 +56,10 @@ void test_set()
     for(int j=0; j<100; ++j)
       o_esplset.insert({ random_value<int>(gen), random_value<int>(gen) });
 
+    std::set<StructNoDefaultCtr> o_ndctr;
+    for(int j=0; j<100; ++j)
+      o_ndctr.insert({ random_value<int>(gen) });
+
     std::ostringstream os;
     {
       OArchive oar(os);
@@ -65,6 +69,7 @@ void test_set()
       oar(o_isplset);
       oar(o_eserset);
       oar(o_esplset);
+      oar(o_ndctr);
     }
 
     std::set<int> i_podset;
@@ -72,6 +77,7 @@ void test_set()
     std::set<StructInternalSplit>        i_isplset;
     std::set<StructExternalSerialize> i_eserset;
     std::set<StructExternalSplit>       i_esplset;
+    std::set<StructNoDefaultCtr> i_ndctr;
 
     std::istringstream is(os.str());
     {
@@ -82,6 +88,7 @@ void test_set()
       iar(i_isplset);
       iar(i_eserset);
       iar(i_esplset);
+      iar(i_ndctr);
     }
 
     check_collection(i_podset,  o_podset);
@@ -89,6 +96,7 @@ void test_set()
     check_collection(i_isplset, o_isplset);
     check_collection(i_eserset, o_eserset);
     check_collection(i_esplset, o_esplset);
+    check_collection(i_ndctr, o_ndctr);
   }
 }
 

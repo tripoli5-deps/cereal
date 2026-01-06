@@ -108,6 +108,7 @@ void test_atomic()
     std::atomic<TrivialISPL> o_ispl{{random_value<int>(gen)}};
     std::atomic<TrivialESER> o_eser{{random_value<int>(gen)}};
     std::atomic<TrivialESPL> o_espl{{random_value<int>(gen)}};
+    std::atomic<StructNoDefaultCtr> o_ndctr{{random_value<int>(gen)}};
 
     std::ostringstream os;
     {
@@ -124,6 +125,7 @@ void test_atomic()
       oar(o_ispl);
       oar(o_eser);
       oar(o_espl);
+      oar(o_ndctr);
     }
 
     decltype(o_ab) i_ab;
@@ -137,6 +139,7 @@ void test_atomic()
     decltype(o_ispl) i_ispl;
     decltype(o_eser) i_eser;
     decltype(o_espl) i_espl;
+    decltype(o_ndctr) i_ndctr{{0}};
 
     std::istringstream is(os.str());
     {
@@ -153,6 +156,7 @@ void test_atomic()
       iar(i_ispl);
       iar(i_eser);
       iar(i_espl);
+      iar(i_ndctr);
     }
 
     CHECK_EQ(o_ab.load(), i_ab.load());
@@ -166,5 +170,6 @@ void test_atomic()
     CHECK_EQ(i_ispl.load(), o_ispl.load());
     CHECK_EQ(i_eser.load(), o_eser.load());
     CHECK_EQ(i_espl.load(), o_espl.load());
+    CHECK_EQ(i_ndctr.load(), o_ndctr.load());
   }
 }

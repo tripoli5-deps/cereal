@@ -286,4 +286,19 @@ struct StructNoDefaultCtr {
     }
 };
 
+template<>
+struct StructHash<StructNoDefaultCtr> {
+  public:
+    size_t operator()(const StructNoDefaultCtr & s) const
+    {
+      return std::hash<int>()(s.x());
+    }
+};
+
+inline std::ostream& operator<<(std::ostream& os, StructNoDefaultCtr const & s)
+{
+    os << "[x: " << s.x() << " ]";
+    return os;
+}
+
 #endif // CEREAL_TEST_COMMON_H_

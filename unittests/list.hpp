@@ -56,6 +56,10 @@ void test_list()
     for(auto & elem : o_espllist)
       elem = StructExternalSplit( random_value<int>(gen), random_value<int>(gen) );
 
+    std::list<StructNoDefaultCtr> o_nodefaultctr_list;
+    for (std::size_t i = 0; i < 100; i++)
+      o_nodefaultctr_list.emplace_back( random_value<int>(gen) );
+
     std::ostringstream os;
     {
       OArchive oar(os);
@@ -65,6 +69,7 @@ void test_list()
       oar(o_ispllist);
       oar(o_eserlist);
       oar(o_espllist);
+      oar(o_nodefaultctr_list);
     }
 
     std::list<int> i_podlist;
@@ -72,6 +77,7 @@ void test_list()
     std::list<StructInternalSplit>     i_ispllist;
     std::list<StructExternalSerialize> i_eserlist;
     std::list<StructExternalSplit>     i_espllist;
+    std::list<StructNoDefaultCtr>      i_nodefaultctr_list;
 
     std::istringstream is(os.str());
     {
@@ -82,6 +88,7 @@ void test_list()
       iar(i_ispllist);
       iar(i_eserlist);
       iar(i_espllist);
+      iar(i_nodefaultctr_list);
     }
 
     check_collection(i_podlist,  o_podlist);
@@ -89,6 +96,7 @@ void test_list()
     check_collection(i_ispllist, o_ispllist);
     check_collection(i_eserlist, o_eserlist);
     check_collection(i_espllist, o_espllist);
+    check_collection(i_nodefaultctr_list, o_nodefaultctr_list);
   }
 }
 

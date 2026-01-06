@@ -56,6 +56,10 @@ void test_unordered_set()
     for(int j=0; j<100; ++j)
       o_esplunordered_set.insert({ random_value<int>(gen), random_value<int>(gen) });
 
+    std::unordered_set<StructNoDefaultCtr, StructHash<StructNoDefaultCtr>> o_ndctr;
+    for(int j=0; j<100; ++j)
+      o_ndctr.insert({ random_value<int>(gen) });
+
     std::ostringstream os;
     {
       OArchive oar(os);
@@ -65,6 +69,7 @@ void test_unordered_set()
       oar(o_isplunordered_set);
       oar(o_eserunordered_set);
       oar(o_esplunordered_set);
+      oar(o_ndctr);
     }
 
     std::unordered_set<int> i_podunordered_set;
@@ -72,6 +77,7 @@ void test_unordered_set()
     std::unordered_set<StructInternalSplit, StructHash<StructInternalSplit>>           i_isplunordered_set;
     std::unordered_set<StructExternalSerialize, StructHash<StructExternalSerialize>>   i_eserunordered_set;
     std::unordered_set<StructExternalSplit, StructHash<StructExternalSplit>>           i_esplunordered_set;
+    std::unordered_set<StructNoDefaultCtr, StructHash<StructNoDefaultCtr>>             i_ndctr;
 
     std::istringstream is(os.str());
     {
@@ -82,6 +88,7 @@ void test_unordered_set()
       iar(i_isplunordered_set);
       iar(i_eserunordered_set);
       iar(i_esplunordered_set);
+      iar(i_ndctr);
     }
 
     for(auto const & p : i_podunordered_set)
@@ -107,6 +114,11 @@ void test_unordered_set()
     for(auto const & p : i_esplunordered_set)
     {
       CHECK_EQ(o_esplunordered_set.count(p), 1lu);
+    }
+
+    for (const auto& p : i_ndctr)
+    {
+      CHECK_EQ(i_ndctr.count(p), 1lu);
     }
   }
 }

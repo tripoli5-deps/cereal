@@ -56,6 +56,11 @@ void test_unordered_map()
     for(int j=0; j<100; ++j)
       o_esplunordered_map.insert({random_value<int8_t>(gen),  { random_value<int>(gen), random_value<int>(gen) }});
 
+    std::unordered_map<StructNoDefaultCtr, StructNoDefaultCtr, StructHash<StructNoDefaultCtr>> o_ndctr;
+    for(int j = 0; j < 100; j++) {
+      o_ndctr.insert({ {random_value<int>(gen)}, {random_value<int>(gen)} });
+    }
+
     std::ostringstream os;
     {
       OArchive oar(os);
@@ -65,6 +70,7 @@ void test_unordered_map()
       oar(o_isplunordered_map);
       oar(o_eserunordered_map);
       oar(o_esplunordered_map);
+      oar(o_ndctr);
     }
 
     std::unordered_map<std::string, int> i_podunordered_map;
@@ -72,6 +78,7 @@ void test_unordered_map()
     std::unordered_map<uint16_t, StructInternalSplit>        i_isplunordered_map;
     std::unordered_map<uint32_t, StructExternalSerialize> i_eserunordered_map;
     std::unordered_map<int8_t, StructExternalSplit>       i_esplunordered_map;
+    std::unordered_map<StructNoDefaultCtr, StructNoDefaultCtr, StructHash<StructNoDefaultCtr>> i_ndctr;
 
     std::istringstream is(os.str());
     {
@@ -82,6 +89,7 @@ void test_unordered_map()
       iar(i_isplunordered_map);
       iar(i_eserunordered_map);
       iar(i_esplunordered_map);
+      iar(i_ndctr);
     }
 
     for(auto const & p : i_podunordered_map)
@@ -116,6 +124,13 @@ void test_unordered_map()
     {
       auto v = o_esplunordered_map.find(p.first);
       CHECK_NE(v, o_esplunordered_map.end());
+      CHECK_EQ(p.second, v->second);
+    }
+
+    for(auto const & p : i_ndctr)
+    {
+      auto v = o_ndctr.find(p.first);
+      CHECK_NE(v, o_ndctr.end());
       CHECK_EQ(p.second, v->second);
     }
   }

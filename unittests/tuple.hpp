@@ -57,6 +57,11 @@ void test_tuple()
         StructExternalSerialize( rng(), rng() ),
         StructExternalSerialize( rng(), rng() ),
         StructExternalSerialize( rng(), rng() ) );
+    auto o_ndctr = std::make_tuple( StructNoDefaultCtr( rng() ),
+        StructNoDefaultCtr( rng() ),
+        StructNoDefaultCtr( rng() ),
+        StructNoDefaultCtr( rng() ) );
+
 
     std::ostringstream os;
     {
@@ -68,6 +73,7 @@ void test_tuple()
       oar(o_ispltuple);
       oar(o_esertuple);
       oar(o_espltuple);
+      oar(o_ndctr);
     }
 
     decltype( o_podtuple   ) i_podtuple;
@@ -76,6 +82,7 @@ void test_tuple()
     decltype( o_ispltuple  ) i_ispltuple;
     decltype( o_esertuple  ) i_esertuple;
     decltype( o_espltuple  ) i_espltuple;
+    decltype( o_ndctr  ) i_ndctr{{0},{0},{0},{0}};
 
     std::istringstream is(os.str());
     {
@@ -87,6 +94,7 @@ void test_tuple()
       iar(i_ispltuple);
       iar(i_esertuple);
       iar(i_espltuple);
+      iar(i_ndctr);
     }
 
     CHECK_EQ( i_podtuple,   o_podtuple);
@@ -95,6 +103,7 @@ void test_tuple()
     CHECK_EQ( i_ispltuple,  o_ispltuple);
     CHECK_EQ( i_esertuple,  o_esertuple);
     CHECK_EQ( i_espltuple,  o_espltuple);
+    CHECK_EQ( i_ndctr,      o_ndctr);
   }
 }
 

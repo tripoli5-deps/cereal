@@ -64,6 +64,11 @@ void test_map()
     for(int j=0; j<100; ++j)
       o_esplmap.insert({random_value<int8_t>(gen),  { random_value<int>(gen), random_value<int>(gen) }});
 
+    std::map<StructNoDefaultCtr, StructNoDefaultCtr> o_ndctr;
+    for(int j = 0; j < 100; j++) {
+      o_ndctr.insert({ {random_value<int>(gen)}, {random_value<int>(gen)} });
+    }
+
     std::ostringstream os;
     {
       OArchive oar(os);
@@ -74,6 +79,7 @@ void test_map()
       oar(o_isplmap);
       oar(o_esermap);
       oar(o_esplmap);
+      oar(o_ndctr);
     }
 
     std::map<size_t, std::vector<StructInternalSerialize>> i_vectormap;
@@ -82,6 +88,7 @@ void test_map()
     std::map<int, StructInternalSplit>        i_isplmap;
     std::map<uint32_t, StructExternalSerialize> i_esermap;
     std::map<int8_t, StructExternalSplit>       i_esplmap;
+    std::map<StructNoDefaultCtr, StructNoDefaultCtr> i_ndctr;
 
     std::istringstream is(os.str());
     {
@@ -93,6 +100,7 @@ void test_map()
       iar(i_isplmap);
       iar(i_esermap);
       iar(i_esplmap);
+      iar(i_ndctr);
     }
 
     CHECK_EQ(i_vectormap.size(), o_vectormap.size());
@@ -109,6 +117,7 @@ void test_map()
     check_collection(i_isplmap, o_isplmap);
     check_collection(i_esermap, o_esermap);
     check_collection(i_esplmap, o_esplmap);
+    check_collection(i_ndctr, o_ndctr);
   }
 }
 
