@@ -52,8 +52,10 @@ namespace cereal
     size_type size;
     ar( make_size_tag( size ) );
     
-    T tmp = access::stack_construct<T>();
-    deque.resize( static_cast<size_t>( size ) , tmp );
+    // We load the deque with successive push_back calls, as this permits loading T's
+    // which have a deleted copy constructor, but which are moveable
+    for (size_type i = 0; i < size; i++)
+      deque.push_back(access::stack_construct<T>());
 
     for( auto & i : deque )
       ar( i );

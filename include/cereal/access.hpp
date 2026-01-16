@@ -322,7 +322,7 @@ namespace cereal
       template <class T> inline
       static T stack_construct()
       {
-        return std::move(T());
+        return T();
       }
 
       template <class T> inline

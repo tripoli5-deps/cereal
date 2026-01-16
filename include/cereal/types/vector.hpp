@@ -77,9 +77,13 @@ namespace cereal
   {
     size_type size;
     ar( make_size_tag( size ) );
-    
-    T tmp = access::stack_construct<T>();
-    vector.resize( static_cast<std::size_t>( size ) , tmp );
+  
+    // We load the vector with successive push_back calls, as this permits loading T's
+    // which have a deleted copy constructor, but which are moveable   
+    vector.reserve(size);
+    for (size_type i = 0; i < size; i++)
+      vector.push_back(access::stack_construct<T>());
+
     for(auto && v : vector)
       ar( v );
   }
