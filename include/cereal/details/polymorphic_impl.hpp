@@ -180,7 +180,7 @@ namespace cereal
 
           The returned PolymorphicCaster is capable of upcasting or downcasting between the two types. */
       template <class F> inline
-      static std::vector<PolymorphicCaster const *> const & lookup( std::type_index const & baseIndex, std::type_index const & derivedIndex, F && exceptionFunc )
+      static std::vector<PolymorphicCaster const *> const * lookup( std::type_index const & baseIndex, std::type_index const & derivedIndex, F && exceptionFunc )
       {
         // First phase of lookup - match base type index
         auto const & baseMap = StaticObject<PolymorphicCasters>::getInstance().map;
@@ -194,16 +194,16 @@ namespace cereal
         if( derivedIter == derivedMap.end() )
           exceptionFunc();
 
-        return derivedIter->second;
+        return &derivedIter->second;
       }
 
       //! Performs a downcast to the derived type using a registered mapping
       template <class Derived> inline
       static const Derived * downcast( const void * dptr, std::type_info const & baseInfo )
       {
-        auto const & mapping = lookup( baseInfo, typeid(Derived), [&](){ UNREGISTERED_POLYMORPHIC_CAST_EXCEPTION(save) } );
+        auto const * mapping = lookup( baseInfo, typeid(Derived), [&](){ UNREGISTERED_POLYMORPHIC_CAST_EXCEPTION(save) } );
 
-        for( auto const * dmap : mapping )
+        for( auto const * dmap : *mapping )
           dptr = dmap->downcast( dptr );
 
         return static_cast<Derived const *>( dptr );
@@ -215,10 +215,10 @@ namespace cereal
       template <class Derived> inline
       static void * upcast( Derived * const dptr, std::type_info const & baseInfo )
       {
-        auto const & mapping = lookup( baseInfo, typeid(Derived), [&](){ UNREGISTERED_POLYMORPHIC_CAST_EXCEPTION(load) } );
+        auto const * mapping = lookup( baseInfo, typeid(Derived), [&](){ UNREGISTERED_POLYMORPHIC_CAST_EXCEPTION(load) } );
 
         void * uptr = dptr;
-        for( auto mIter = mapping.rbegin(), mEnd = mapping.rend(); mIter != mEnd; ++mIter )
+        for( auto mIter = mapping->rbegin(), mEnd = mapping->rend(); mIter != mEnd; ++mIter )
           uptr = (*mIter)->upcast( uptr );
 
         return uptr;
@@ -228,10 +228,10 @@ namespace cereal
       template <class Derived> inline
       static std::shared_ptr<void> upcast( std::shared_ptr<Derived> const & dptr, std::type_info const & baseInfo )
       {
-        auto const & mapping = lookup( baseInfo, typeid(Derived), [&](){ UNREGISTERED_POLYMORPHIC_CAST_EXCEPTION(load) } );
+        auto const * mapping = lookup( baseInfo, typeid(Derived), [&](){ UNREGISTERED_POLYMORPHIC_CAST_EXCEPTION(load) } );
 
         std::shared_ptr<void> uptr = dptr;
-        for( auto mIter = mapping.rbegin(), mEnd = mapping.rend(); mIter != mEnd; ++mIter )
+        for( auto mIter = mapping->rbegin(), mEnd = mapping->rend(); mIter != mEnd; ++mIter )
           uptr = (*mIter)->upcast( uptr );
 
         return uptr;
